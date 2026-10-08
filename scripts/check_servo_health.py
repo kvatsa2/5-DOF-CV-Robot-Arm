@@ -182,7 +182,7 @@ def check_fk(bus, medians) -> None:
     print("      data/servo_calibration.json does not describe the pose the arm")
     print("      is in. Fix that before commanding any motion.")
     print()
-    print(f"      Tabletop estimate: if the claw tip is H mm above the table,")
+    print("      Tabletop estimate: if the claw tip is H mm above the table,")
     print(f"      then TABLE_Z_IN_BASE ~ {tip_z:+.1f} - H  mm.")
     print(f"      (config currently says {1000*config.TABLE_Z_IN_BASE:+.1f} mm)")
 
@@ -197,7 +197,7 @@ def main() -> None:
                     help="stability samples per joint (default 20)")
     args = ap.parse_args()
 
-    print(f"Servo health check — READ ONLY, no motion commanded.")
+    print("Servo health check — READ ONLY, no motion commanded.")
     print(f"Port {args.port} @ {args.baud} baud\n")
 
     try:

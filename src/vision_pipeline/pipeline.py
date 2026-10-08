@@ -28,7 +28,6 @@ import numpy as np
 
 from vision_pipeline.calibration.pixel_to_world import PixelToWorldCalibrator
 from vision_pipeline.detection.lego_detector import LegoBrickDetector
-from vision_pipeline.detection.types import Detection
 from vision_pipeline.planning.pick import PickTarget, plan_pick_sequence
 from vision_pipeline.robot_interface.base import Pose, RobotInterface
 

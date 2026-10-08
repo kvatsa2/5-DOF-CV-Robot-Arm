@@ -14,7 +14,7 @@ the lens. So a ray always has positive Z (it goes out in front of the camera).
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 import cv2

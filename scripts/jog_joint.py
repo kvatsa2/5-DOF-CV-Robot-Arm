@@ -48,7 +48,6 @@ IK_JOINTS = range(1, 6)
 DEFAULT_TICKS = 80           # ~7 deg at J1..J5 — enough wrist travel to see
 MIN_VISIBLE_MM = 3.0         # below this the motion is too small to judge by eye
 MIN_VISIBLE_DEG = 3.0        # ...or, for a joint that only rotates the wrist
-CLAW_LEN_MM = 70.06          # ClawTip offset from the wrist, from init_arm.m
 CLEARANCE_MARGIN_MM = 5.0    # never plan to close more than this much of the gap
 
 
@@ -150,7 +149,7 @@ def apply_flip(joint: int) -> None:
     cal[str(joint)]["dir_sign"] = -old
     path.write_text(json.dumps(cal, indent=2) + "\n")
     print(f"  Wrote {path}: J{joint} dir_sign {old:+d} -> {-old:+d}")
-    print(f"  Re-run this jog to confirm the prediction now matches.")
+    print("  Re-run this jog to confirm the prediction now matches.")
 
 
 def main() -> None:
@@ -243,7 +242,7 @@ def main() -> None:
             if descent_mm > usable:
                 print(f"\n  REFUSED: that would leave under {CLEARANCE_MARGIN_MM:.0f} mm "
                       f"of clearance.")
-                print(f"  Jog this joint the OTHER way instead (lifts away from the table):")
+                print("  Jog this joint the OTHER way instead (lifts away from the table):")
                 print(f"      python scripts/jog_joint.py --joint {joint} "
                       f"--ticks {-args.ticks}")
                 print(f"  Or, if the arm really has more room than "
@@ -254,7 +253,7 @@ def main() -> None:
             print("\n  --dry-run: nothing commanded.")
             return
 
-        print(f"\n  This WILL move the arm. Claw clear of the table? Power within reach?")
+        print("\n  This WILL move the arm. Claw clear of the table? Power within reach?")
         if not args.yes:
             if input("  Type 'go' to proceed: ").strip().lower() != "go":
                 print("  Aborted. Nothing commanded.")
@@ -275,10 +274,10 @@ def main() -> None:
             print("  into the direction below.")
 
         print(f"\n  Predicted: {prediction}")
-        print(f"  What actually happened?")
-        print(f"    [m] matched the prediction")
-        print(f"    [o] moved the OPPOSITE way")
-        print(f"    [?] unclear / too small to tell")
+        print("  What actually happened?")
+        print("    [m] matched the prediction")
+        print("    [o] moved the OPPOSITE way")
+        print("    [?] unclear / too small to tell")
         answer = input("  > ").strip().lower()
 
         if answer.startswith("m"):
@@ -289,10 +288,10 @@ def main() -> None:
             if args.apply_flip:
                 apply_flip(joint)
             else:
-                print(f"  Re-run with --apply-flip to write it, then jog again to confirm.")
+                print("  Re-run with --apply-flip to write it, then jog again to confirm.")
         else:
-            print(f"\n  Inconclusive. Re-run with a larger --ticks so the motion is")
-            print(f"  unambiguous, or sight along a single axis.")
+            print("\n  Inconclusive. Re-run with a larger --ticks so the motion is")
+            print("  unambiguous, or sight along a single axis.")
 
         print(f"\n  Joint left at {actual_tick} ticks (jogged, not returned to start).")
         print(f"  To undo:  python scripts/jog_joint.py --joint {joint} "

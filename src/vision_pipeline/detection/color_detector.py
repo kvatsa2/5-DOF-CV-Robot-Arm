@@ -165,7 +165,7 @@ def close_contour_gaps(frame_shape: tuple[int, int], contour: np.ndarray) -> np.
     centroid/area/bbox ColorDetector already reported, which stay based on
     the true (uncorrected) detection.
     """
-    x, y, w, h = cv2.boundingRect(contour)
+    _, _, w, h = cv2.boundingRect(contour)
     smaller_side = min(w, h)
     kernel_size = int(smaller_side * config.STUD_REGION_CLOSE_FRAC)
     kernel_size = max(config.STUD_REGION_CLOSE_MIN_PX, min(config.STUD_REGION_CLOSE_MAX_PX, kernel_size))

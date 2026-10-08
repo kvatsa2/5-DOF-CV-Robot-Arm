@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 
 class ServoCalibrationError(Exception):
     """Raised when servo calibration is missing or incomplete."""
-    pass
 
 
 def load_calibration(path: Optional[str] = None) -> dict:

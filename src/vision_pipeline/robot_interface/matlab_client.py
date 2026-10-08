@@ -28,7 +28,6 @@ _F_PHYS_FROM_MODEL = np.diag([1.0, -1.0, -1.0, 1.0])
 
 class IKUnreachableError(Exception):
     """Raised when the IK solver reports a target outside the workspace."""
-    pass
 
 
 class MatlabIKClient:

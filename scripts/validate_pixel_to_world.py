@@ -223,13 +223,13 @@ def main() -> None:
         single_view_points.append(single)
         independent_points.append(independent)
         if single is None:
-            print(f"  ray never meets the table plane for this view — skipped.")
+            print("  ray never meets the table plane for this view — skipped.")
             continue
         err_mm = float(np.linalg.norm(single - independent)) * 1000.0
         print(f"  single-view {single} vs independent {independent} -> {err_mm:.1f} mm")
 
     # --- 2. Two-view triangulation (no table-plane assumption)
-    print(f"\n=== Two-view triangulation ===")
+    print("\n=== Two-view triangulation ===")
     pixel_pose_views = [(pixel, t_base_gripper) for pixel, t_base_gripper, _ in views]
     tri = calibrator.triangulate_pixels(pixel_pose_views)
     if tri is None:
@@ -246,7 +246,7 @@ def main() -> None:
         print(f"  vs mean independent answer: {err_mm:.1f} mm")
 
     # --- 3. Cross-pose board spread + table-plane measurement
-    print(f"\n=== Cross-pose board spread (board never moved) ===")
+    print("\n=== Cross-pose board spread (board never moved) ===")
     board_origins = []
     for _pixel, t_base_gripper, t_cam_board in views:
         t_base_board = t_base_gripper @ t_gripper_camera @ t_cam_board
@@ -263,7 +263,7 @@ def main() -> None:
     # --- 4. Optional physical goto
     if args.goto_corner:
         target_point = tri.point_base if tri is not None else mean_independent
-        print(f"\n=== goto-corner ===")
+        print("\n=== goto-corner ===")
         print(f"  commanding claw tip to {target_point} (base frame, m)")
         print("  This closes the servo bus/MATLAB connection used above and opens")
         print("  HardwareRobot fresh, so IK + servo commanding go through the merge-ready path.")

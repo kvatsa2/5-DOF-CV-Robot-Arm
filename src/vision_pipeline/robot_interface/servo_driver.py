@@ -34,7 +34,6 @@ logger = logging.getLogger(__name__)
 
 class ServoCalibrationError(Exception):
     """Raised when servo calibration fails or is incomplete."""
-    pass
 
 
 class ServoSafetyError(Exception):
@@ -44,7 +43,6 @@ class ServoSafetyError(Exception):
     not moved, and retrying the identical command will fail identically. The
     caller must decide (re-plan, or have an operator reposition the arm).
     """
-    pass
 
 
 class ServoBus:
