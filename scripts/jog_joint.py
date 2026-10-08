@@ -44,7 +44,7 @@ from vision_pipeline import config
 from vision_pipeline.robot_interface.matlab_client import MatlabIKClient
 from vision_pipeline.robot_interface.servo_driver import ServoBus, ServoSafetyError
 
-IK_JOINTS = range(1, 6)
+IK_JOINTS = config.IK_JOINT_IDS  # J1..J5; J6 is the gripper
 DEFAULT_TICKS = 80           # ~7 deg at J1..J5 — enough wrist travel to see
 MIN_VISIBLE_MM = 3.0         # below this the motion is too small to judge by eye
 MIN_VISIBLE_DEG = 3.0        # ...or, for a joint that only rotates the wrist

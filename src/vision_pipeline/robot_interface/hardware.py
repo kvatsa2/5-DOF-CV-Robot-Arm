@@ -61,7 +61,7 @@ class HardwareRobot(RobotInterface):
             List of 5 angles in radians.
         """
         angles_rad = []
-        for j_id in range(1, 6):  # J1..J5 only
+        for j_id in config.IK_JOINT_IDS:
             try:
                 present_tick = self.servo_bus.read_position(j_id)
                 angle_rad = self.servo_bus.ticks_to_rad(j_id, present_tick)

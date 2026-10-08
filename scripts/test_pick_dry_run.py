@@ -49,7 +49,7 @@ from vision_pipeline.robot_interface.base import Pose
 from vision_pipeline.robot_interface.matlab_client import IKUnreachableError, MatlabIKClient
 from vision_pipeline.robot_interface.servo_driver import ServoBus
 
-IK_JOINTS = (1, 2, 3, 4, 5)
+IK_JOINTS = config.IK_JOINT_IDS  # J1..J5; J6 is the gripper
 # The first frames off a freshly-opened capture are stale/auto-exposing.
 CAMERA_WARMUP_FRAMES = 8
 

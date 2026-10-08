@@ -61,14 +61,10 @@ from vision_pipeline.robot_interface.hardware import HardwareRobot
 from vision_pipeline.robot_interface.matlab_client import MatlabIKClient
 from vision_pipeline.robot_interface.servo_driver import ServoBus, ServoSafetyError
 
-IK_JOINTS = range(1, 6)
+IK_JOINTS = config.IK_JOINT_IDS  # J1..J5; J6 is the gripper
 DEFAULT_STEP_TICKS = 60
 MIN_STEP_TICKS = 10
 MAX_STEP_TICKS = 300
-
-
-def _current_angles_rad(bus: ServoBus) -> list[float]:
-    return [bus.ticks_to_rad(j, bus.read_position(j)) for j in IK_JOINTS]
 
 
 def _detect_target(gray, board_idx, corner_id, detectors, intr):
@@ -199,7 +195,7 @@ def main() -> None:
                     print("  target corner not visible — not recorded.")
                     continue
                 pixel, t_cam_board = target
-                angles_rad = _current_angles_rad(bus)
+                angles_rad = bus.read_angles_rad()
                 t_base_gripper = client.request_fk(angles_rad)
                 views.append((pixel, t_base_gripper, t_cam_board))
                 print(f"  recorded view {len(views)} at pixel {pixel}")

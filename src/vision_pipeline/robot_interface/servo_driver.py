@@ -187,6 +187,14 @@ class ServoBus:
         offset_rad = cal["dir_sign"] * (ticks - cal["home_tick"]) / cal["ticks_per_rad"]
         return cal["home_angle_rad"] + offset_rad
 
+    def read_angles_rad(self, servo_ids=config.IK_JOINT_IDS) -> list[float]:
+        """Read each joint's present position and convert it to a MATLAB angle.
+
+        Defaults to the IK joints (J1..J5), in order — exactly the list
+        request_fk / request_ik expect.
+        """
+        return [self.ticks_to_rad(j, self.read_position(j)) for j in servo_ids]
+
     # --- low-level packet protocol ---------------------------------------
 
     def _checksum(self, body: bytes) -> int:

@@ -42,7 +42,7 @@ from vision_pipeline.robot_interface.matlab_client import MatlabIKClient
 from vision_pipeline.robot_interface.servo_driver import ServoBus
 
 JOINTS = range(1, 7)
-IK_JOINTS = range(1, 6)  # J1..J5; J6 is the gripper and never goes through MATLAB
+IK_JOINTS = config.IK_JOINT_IDS  # J1..J5; J6 is the gripper
 
 
 # A reading that swings more than this at rest is not sensor noise.

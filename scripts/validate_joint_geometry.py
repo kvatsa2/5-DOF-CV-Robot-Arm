@@ -42,7 +42,7 @@ from vision_pipeline.capture.camera import Camera
 from vision_pipeline.robot_interface.matlab_client import MatlabIKClient
 from vision_pipeline.robot_interface.servo_driver import ServoBus, ServoSafetyError
 
-IK_JOINTS = range(1, 6)
+IK_JOINTS = config.IK_JOINT_IDS  # J1..J5; J6 is the gripper
 SETTLE_S = 1.5  # let the servo physically stop AND the camera buffer flush
 
 
@@ -57,7 +57,7 @@ def _observe(cam, bus, client, intr, detectors):
         frame = cam.read_frame()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     poses = detect_board_poses(gray, intr, detectors)
-    angles = [bus.ticks_to_rad(j, bus.read_position(j)) for j in IK_JOINTS]
+    angles = bus.read_angles_rad()
     return poses, client.request_fk(angles)
 
 

@@ -46,7 +46,7 @@ from vision_pipeline import config
 from vision_pipeline.robot_interface.matlab_client import IKUnreachableError, MatlabIKClient
 from vision_pipeline.robot_interface.servo_driver import ServoBus, ServoSafetyError
 
-IK_JOINTS = (1, 2, 3, 4, 5)
+IK_JOINTS = config.IK_JOINT_IDS  # J1..J5; J6 is the gripper
 
 
 def confirm(prompt: str) -> bool:
@@ -56,19 +56,15 @@ def confirm(prompt: str) -> bool:
         return False
 
 
-def read_angles(bus: ServoBus) -> list[float]:
-    return [bus.ticks_to_rad(j, bus.read_position(j)) for j in IK_JOINTS]
-
-
 def _safe_read(bus: ServoBus):
-    """read_angles, but survives a bus that is itself failing.
+    """bus.read_angles_rad, but survives a bus that is itself failing.
 
     Called on the error path, where the most likely cause is exactly that the
     bus stopped answering, so re-reading must not raise a second time and bury
     the original failure.
     """
     try:
-        return read_angles(bus)
+        return bus.read_angles_rad()
     except Exception as e:
         print(f"    Could not re-read joint positions either: {e}")
         print("    Joint state is UNKNOWN. Power-cycle and run check_servo_health.py.")
@@ -156,7 +152,7 @@ def go_to(bus, ik, label, xyz, angles_now, step_cap, pause_s):
         print("    Run scripts/servo_torque.py before commanding anything else.")
         return _safe_read(bus)
 
-    new_angles = read_angles(bus)
+    new_angles = bus.read_angles_rad()
 
     # Where it actually ended up, against where it was asked to go.
     _, T_tip = ik.request_fk_tip(new_angles)
@@ -232,7 +228,7 @@ def main() -> None:
             print("      Support the arm and run: python scripts/servo_torque.py --enable all")
             return
 
-        angles = read_angles(bus)
+        angles = bus.read_angles_rad()
         _, T_tip = ik.request_fk_tip(angles)
         tip = T_tip[:3, 3]
         print(f"\nclaw tip now: ({tip[0] * 1000:+.1f}, {tip[1] * 1000:+.1f}, "

@@ -69,15 +69,10 @@ from vision_pipeline.capture.camera import Camera
 from vision_pipeline.robot_interface.matlab_client import MatlabIKClient
 from vision_pipeline.robot_interface.servo_driver import ServoBus, ServoSafetyError
 
-IK_JOINTS = range(1, 6)  # J1..J5; J6 is the gripper, not part of hand-eye
+IK_JOINTS = config.IK_JOINT_IDS  # J1..J5; J6 is the gripper
 DEFAULT_STEP_TICKS = 60
 MIN_STEP_TICKS = 10
 MAX_STEP_TICKS = 300
-
-
-def _current_angles_rad(bus: ServoBus) -> list[float]:
-    """J1..J5 angles in radians, straight from a servo read-back — no Pose involved."""
-    return [bus.ticks_to_rad(j, bus.read_position(j)) for j in IK_JOINTS]
 
 
 def _wait_until_still(bus: ServoBus, timeout_s: float = 6.0, tol_ticks: int = 2):

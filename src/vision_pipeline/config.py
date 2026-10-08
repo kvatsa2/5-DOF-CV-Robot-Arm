@@ -529,6 +529,10 @@ SERVO_GRIPPER_CLOSE_RAD = 0.2   # ~11.5 deg of claw rotation to close
 # Total servos on the bus: J1..J5 (arm) + J6 (gripper).
 NUM_JOINTS = 6
 
+# The arm joints the MATLAB IK/FK solver drives (J1..J5). J6, the gripper,
+# never goes through IK or FK.
+IK_JOINT_IDS = (1, 2, 3, 4, 5)
+
 
 # --- Arm observation / jog web UI -------------------------------------------
 #

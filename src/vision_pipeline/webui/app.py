@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 _CONTROLLER_ERRORS = (RuntimeError, ServoCalibrationError)
 
 # J1..J5 are IK-driven and feed hand-eye's FK; J6 (GRIPPER_JOINT_ID) does not.
-_IK_JOINT_IDS = range(1, GRIPPER_JOINT_ID)
+_IK_JOINT_IDS = config.IK_JOINT_IDS
 
 
 def _joint_state_json(state: JointState) -> dict:

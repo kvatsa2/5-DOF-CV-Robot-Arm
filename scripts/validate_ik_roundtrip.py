@@ -41,7 +41,7 @@ from vision_pipeline import config
 from vision_pipeline.robot_interface.matlab_client import IKUnreachableError, MatlabIKClient
 from vision_pipeline.robot_interface.servo_driver import ServoBus, ServoSafetyError
 
-IK_JOINTS = range(1, 6)
+IK_JOINTS = config.IK_JOINT_IDS  # J1..J5; J6 is the gripper
 
 # Clearance the script insists on keeping between the claw tip and the table.
 #
@@ -76,11 +76,6 @@ PROBES = [
     ("down", 0.0, 0.0, -15.0),
     ("up", 0.0, 0.0, 15.0),
 ]
-
-
-def read_angles(bus) -> list[float]:
-    """Current MATLAB joint angles from live servo positions."""
-    return [bus.ticks_to_rad(j, bus.read_position(j)) for j in IK_JOINTS]
 
 
 def tip_mm(client, angles_rad) -> np.ndarray:
@@ -138,7 +133,7 @@ def attempt(bus, client, label, target_mm, floor_z, args, results):
         results.append((label, None, None, "below floor"))
         return
 
-    current_angles = read_angles(bus)
+    current_angles = bus.read_angles_rad()
     prev = preview_move(bus, client, target_mm, current_angles)
     if prev is None:
         results.append((label, None, None, "IK unreachable"))
@@ -182,7 +177,7 @@ def attempt(bus, client, label, target_mm, floor_z, args, results):
         results.append((label, None, None, "move refused/failed"))
         return
 
-    achieved = tip_mm(client, read_angles(bus))
+    achieved = tip_mm(client, bus.read_angles_rad())
     error = achieved - target_mm
     dist = float(np.linalg.norm(error))
 
@@ -221,7 +216,7 @@ def main() -> None:
     results = []
     with client, bus:
         try:
-            start_tip = tip_mm(client, read_angles(bus))
+            start_tip = tip_mm(client, bus.read_angles_rad())
         except RuntimeError as e:
             print(f"\n{e}")
             sys.exit(1)
@@ -245,7 +240,7 @@ def main() -> None:
             print("\nLift did not complete — stopping rather than running the "
                   "probes from an unknown pose.")
         else:
-            base = lifted if args.dry_run else tip_mm(client, read_angles(bus))
+            base = lifted if args.dry_run else tip_mm(client, bus.read_angles_rad())
             for label, dx, dy, dz in PROBES:
                 attempt(bus, client, label, base + np.array([dx, dy, dz]),
                         floor_z, args, results)

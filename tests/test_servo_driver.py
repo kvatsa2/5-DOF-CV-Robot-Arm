@@ -291,6 +291,17 @@ def test_rad_ticks_roundtrip_is_exact_across_joints(monkeypatch):
             assert recovered == pytest.approx(angle, abs=2e-3)
 
 
+
+def test_read_angles_rad_reads_ik_joints_in_order(monkeypatch):
+    """read_angles_rad is the J1..J5 list request_fk/request_ik expect."""
+    bus = _bus(monkeypatch, FakeServoSerial())
+    ticks = {j: bus._cal(j)["home_tick"] + 10 * j for j in range(1, 7)}
+    monkeypatch.setattr(bus, "read_position", lambda j: ticks[j])
+
+    assert bus.read_angles_rad() == [bus.ticks_to_rad(j, ticks[j]) for j in (1, 2, 3, 4, 5)]
+    assert bus.read_angles_rad([6]) == [bus.ticks_to_rad(6, ticks[6])]
+
+
 # --- dir_sign regressions ------------------------------------------------
 #
 # All five derivations below are in the PHYSICAL frame. The imported MATLAB
