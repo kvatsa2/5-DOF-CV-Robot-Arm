@@ -73,8 +73,8 @@ from vision_pipeline.calibration.hand_eye import detect_board_poses
 from vision_pipeline.capture.camera import Camera
 from vision_pipeline.detection.lego_detector import LegoBrickDetector
 
-SAMPLES_PATH = Path("data/board_to_base_samples.json")
-TRANSFORM_PATH = Path("data/board_to_base.json")
+SAMPLES_PATH = Path(config.BOARD_TO_BASE_SAMPLES_PATH)
+TRANSFORM_PATH = Path(config.BOARD_TO_BASE_PATH)
 CAMERA_WARMUP_FRAMES = 8
 
 

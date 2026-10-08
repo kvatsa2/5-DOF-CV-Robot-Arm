@@ -272,6 +272,15 @@ CAMERA_DISTORTION = (0.0, 0.0, 0.0, 0.0, 0.0)
 # mount — measure or calibrate it. Stored as a 4x4 row-major homogeneous matrix
 # in the file; if the file is absent this identity is used.
 HAND_EYE_PATH = "data/hand_eye.json"
+# Raw (gripper pose, board pose) samples behind the solve, kept so a session can
+# be re-solved without recapturing (scripts/calibrate_hand_eye.py --samples).
+HAND_EYE_SAMPLES_PATH = "data/hand_eye_samples.json"
+
+# Board->base tie written by scripts/calibrate_board_to_base.py: the route
+# around a bad hand-eye transform (see CLAUDE.md). Valid only while the board
+# stays where it was when measured.
+BOARD_TO_BASE_PATH = "data/board_to_base.json"
+BOARD_TO_BASE_SAMPLES_PATH = "data/board_to_base_samples.json"
 
 
 # --- Table / pick geometry (Phase 2 -> 3) ----------------------------------
@@ -375,6 +384,10 @@ SERVO_PORT = "COM3"            # Windows serial port name (COMx) or /dev/ttyUSBx
 SERVO_BAUD = 1000000           # Feetech STS3215 default baud rate
 
 SERVO_CALIBRATION_PATH = "data/servo_calibration.json"
+# Measured per-joint travel limits in radians, written by
+# scripts/find_joint_limits.py. matlab/init_arm.m reads the same file (path
+# hardcoded there) so IK stops proposing angles the arm cannot reach.
+JOINT_LIMITS_PATH = "data/joint_limits_rad.json"
 
 # Fallback calibration (used if the JSON file is absent). Each servo (J1..J6)
 # needs a dict with keys: 'home_tick' (present position at home), 'ticks_per_rad',

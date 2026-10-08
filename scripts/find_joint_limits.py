@@ -49,7 +49,7 @@ SEAM_JUMP_TICKS = 1500
 # ~18 deg, several times the servo's observed settling error (tens of ticks) and
 # enough that unpowered sag cannot walk the joint across the boundary.
 SEAM_MARGIN_TICKS = 200
-ANGLE_LIMITS_PATH = "data/joint_limits_rad.json"
+ANGLE_LIMITS_PATH = config.JOINT_LIMITS_PATH
 
 
 def _confirm(prompt: str) -> bool:

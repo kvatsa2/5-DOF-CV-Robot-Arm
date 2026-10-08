@@ -114,7 +114,7 @@ def main() -> None:
     parser.add_argument("--out", default=config.HAND_EYE_PATH)
     parser.add_argument("--min-samples", type=int, default=config.CALIB_HAND_EYE_MIN_SAMPLES)
     parser.add_argument(
-        "--samples", default="data/hand_eye_samples.json",
+        "--samples", default=config.HAND_EYE_SAMPLES_PATH,
         help="raw samples file; rewritten after every 'r' so a crashed session is not lost",
     )
     parser.add_argument(
