@@ -36,10 +36,7 @@ fprintf('IK/FK server: ready\n');
 
 %% ===== START TCP SERVER (java.net, no toolbox required) =====
 PORT = 9999;
-% Bind to the loopback address only. ServerSocket(PORT) alone listens on every
-% network interface, so any machine on the LAN could connect -- not what the
-% "localhost" message below promises. 50 = connection backlog (Java default).
-serverSocket = java.net.ServerSocket(PORT, 50, java.net.InetAddress.getLoopbackAddress());
+serverSocket = java.net.ServerSocket(PORT);
 cleanupServer = onCleanup(@() serverSocket.close());  %#ok<NASGU>
 fprintf('Listening on localhost:%d (Ctrl+C to stop)...\n', PORT);
 
