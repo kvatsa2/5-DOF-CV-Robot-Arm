@@ -98,7 +98,7 @@ class ServoBus:
         self.port = port
         self.baud = baud
         self.serial = None
-        self._calibration = {}
+        self._calibration: dict[str, dict] = {}
 
         # Load calibration (JSON file, fallback to config placeholder)
         self._load_calibration(calibration_path or config.SERVO_CALIBRATION_PATH)
@@ -588,8 +588,8 @@ class ServoBus:
         self,
         servo_id: int,
         target_ticks: int,
-        tolerance_ticks: int = None,
-        max_delta_ticks: int = None,
+        tolerance_ticks: Optional[int] = None,
+        max_delta_ticks: Optional[int] = None,
     ) -> int:
         """Command a servo to a position and verify it actually arrived there.
 

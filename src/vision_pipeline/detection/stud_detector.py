@@ -43,8 +43,8 @@ def suppress_specular_highlights(roi_gray: np.ndarray, roi_hsv: np.ndarray) -> n
     if not np.any(highlight_mask):
         return roi_gray
 
-    highlight_mask = highlight_mask.astype(np.uint8) * 255
-    return cv2.inpaint(roi_gray, highlight_mask, config.SPECULAR_INPAINT_RADIUS, cv2.INPAINT_TELEA)
+    inpaint_mask = highlight_mask.astype(np.uint8) * 255
+    return cv2.inpaint(roi_gray, inpaint_mask, config.SPECULAR_INPAINT_RADIUS, cv2.INPAINT_TELEA)
 
 
 def count_studs(
