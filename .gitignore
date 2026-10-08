@@ -80,3 +80,6 @@ data/joint_limits_rad.json
 data/board_to_base.json
 data/board_to_base_samples.json
 data/dryrun.png
+
+# Claude Code per-user settings
+.claude/settings.local.json
