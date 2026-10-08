@@ -50,16 +50,18 @@ class SimRobot(RobotInterface):
     def get_end_effector_pose(self) -> Pose:
         return self.ee_pose
 
-    def send_target_pose(self, pose: Pose) -> None:
+    def send_target_pose(self, pose: Pose) -> bool:
         self.log.poses.append(pose)
         if self.verbose:
             print(
                 f"[SimRobot] move -> x={pose.x:.3f} y={pose.y:.3f} z={pose.z:.3f} "
                 f"yaw={pose.yaw_deg:.1f}"
             )
+        return True
 
-    def set_gripper(self, closed: bool) -> None:
+    def set_gripper(self, closed: bool) -> bool:
         self.gripper_closed = closed
         self.log.gripper_states.append(closed)
         if self.verbose:
             print(f"[SimRobot] gripper -> {'CLOSED' if closed else 'OPEN'}")
+        return True

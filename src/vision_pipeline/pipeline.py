@@ -32,6 +32,14 @@ from vision_pipeline.planning.pick import PickTarget, plan_pick_sequence
 from vision_pipeline.robot_interface.base import Pose, RobotInterface
 
 
+class PickAbortedError(RuntimeError):
+    """A pick stopped partway because the robot reported a failed step.
+
+    The arm is left wherever the last successful step put it; nothing after the
+    failed step was commanded.
+    """
+
+
 class PickPipeline:
     """Detect a brick in a frame and (optionally) command an arm to pick it."""
 
@@ -175,14 +183,31 @@ class PickPipeline:
         return target
 
     def execute_pick(self, target: PickTarget) -> None:
-        """Run the planned grasp sequence on the robot backend."""
+        """Run the planned grasp sequence on the robot backend.
+
+        Stops at the first step the robot reports as failed and raises
+        PickAbortedError. Carrying on would be unsafe: if the hover move is
+        refused, the descend would drive straight down from wherever the arm
+        happens to be, and the gripper would close on nothing. A backend that
+        returns None (the original contract) is treated as success.
+        """
         if self.robot is None:
             raise RuntimeError("execute_pick needs a RobotInterface backend.")
 
-        for step in plan_pick_sequence(target):
-            self.robot.send_target_pose(step.pose)
+        for i, step in enumerate(plan_pick_sequence(target), start=1):
+            if self.robot.send_target_pose(step.pose) is False:
+                raise PickAbortedError(
+                    f"Pick aborted at step {i}: move to ({step.pose.x:.3f}, "
+                    f"{step.pose.y:.3f}, {step.pose.z:.3f}) m failed. "
+                    f"Nothing further was commanded."
+                )
             if step.gripper_closed is not None:
-                self.robot.set_gripper(step.gripper_closed)
+                if self.robot.set_gripper(step.gripper_closed) is False:
+                    action = "close" if step.gripper_closed else "open"
+                    raise PickAbortedError(
+                        f"Pick aborted at step {i}: gripper {action} failed. "
+                        f"Nothing further was commanded."
+                    )
 
 
 def _pick_z_offset() -> float:

@@ -70,11 +70,21 @@ class RobotInterface(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def send_target_pose(self, pose: Pose) -> None:
-        """Command the arm to move its end effector to the given pose."""
+    def send_target_pose(self, pose: Pose) -> bool:
+        """Command the arm to move its end effector to the given pose.
+
+        Returns True if the arm got there, False if the move was refused or
+        failed (unreachable target, safety refusal, bus error). PickPipeline
+        stops a pick at the first False rather than carrying on from a pose
+        the arm never reached.
+        """
         raise NotImplementedError
 
     @abstractmethod
-    def set_gripper(self, closed: bool) -> None:
-        """Open (closed=False) or close (closed=True) the gripper."""
+    def set_gripper(self, closed: bool) -> bool:
+        """Open (closed=False) or close (closed=True) the gripper.
+
+        Returns True on success, False on failure (same contract as
+        send_target_pose).
+        """
         raise NotImplementedError

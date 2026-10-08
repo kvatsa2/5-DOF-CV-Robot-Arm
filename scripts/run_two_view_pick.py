@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from vision_pipeline import config
 from vision_pipeline.capture.camera import Camera
-from vision_pipeline.pipeline import PickPipeline
+from vision_pipeline.pipeline import PickAbortedError, PickPipeline
 from vision_pipeline.planning.pick import PickTarget
 from vision_pipeline.robot_interface.base import Pose
 from vision_pipeline.robot_interface.hardware import HardwareRobot
@@ -124,7 +124,11 @@ def main() -> None:
             return
 
         print("\nExecuting grasp sequence (hover -> descend -> close -> lift)...")
-        pipeline.execute_pick(target)
+        try:
+            pipeline.execute_pick(target)
+        except PickAbortedError as e:
+            print(f"\n{e}")
+            sys.exit(1)
         print("Done — grasp sequence sent to the arm.")
 
 

@@ -16,7 +16,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from vision_pipeline.pipeline import PickPipeline
+from vision_pipeline.pipeline import PickAbortedError, PickPipeline
 from vision_pipeline.robot_interface.base import Pose
 from vision_pipeline.robot_interface.sim import SimRobot
 
@@ -85,3 +85,36 @@ def test_run_once_without_robot_raises():
     pipeline = PickPipeline()  # robot=None
     with pytest.raises(RuntimeError, match="RobotInterface"):
         pipeline.run_once(_brick_frame())
+
+
+class _FailingRobot(SimRobot):
+    """SimRobot whose Nth move (1-based) reports failure, like an IK refusal."""
+
+    def __init__(self, fail_on_move: int, **kwargs):
+        super().__init__(**kwargs)
+        self.fail_on_move = fail_on_move
+
+    def send_target_pose(self, pose: Pose) -> bool:
+        super().send_target_pose(pose)
+        return len(self.log.poses) != self.fail_on_move
+
+
+def test_pick_stops_at_first_failed_move():
+    # Hover refused: the arm must NOT go on to descend or touch the gripper.
+    robot = _FailingRobot(fail_on_move=1, ee_pose=DOWNWARD_EE_POSE)
+    with pytest.raises(PickAbortedError, match="step 1"):
+        PickPipeline(robot=robot).run_once(_brick_frame())
+    assert len(robot.log.poses) == 1
+    assert robot.log.gripper_states == []
+
+
+def test_pick_stops_when_gripper_fails():
+    class _GripperFails(SimRobot):
+        def set_gripper(self, closed: bool) -> bool:
+            super().set_gripper(closed)
+            return False
+
+    robot = _GripperFails(ee_pose=DOWNWARD_EE_POSE)
+    with pytest.raises(PickAbortedError, match="gripper open failed"):
+        PickPipeline(robot=robot).run_once(_brick_frame())
+    assert len(robot.log.poses) == 1, "No descend after the gripper failed to open"
