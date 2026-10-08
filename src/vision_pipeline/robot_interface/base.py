@@ -1,13 +1,11 @@
 """
-Phase 3 placeholder: the seam where this vision pipeline hands off a target
-pose to your teammate's robot control / kinematics code.
+The seam where the vision pipeline hands a target pose to the arm.
 
 `RobotInterface` is an abstract base class — it defines *what* any robot
-backend must be able to do (send_target_pose, open/close gripper) without
-saying *how*. This lets Phase 3 plug in a simulated backend first (e.g. one
-that just prints/logs poses, or talks to a simulator), then later swap in a
-real backend (ROS topic, serial, or TCP socket to the arm's controller)
-without changing any vision code that depends on this interface.
+backend must be able to do (report its pose, move, open/close the gripper)
+without saying *how*. Two backends implement it: SimRobot (in memory, for
+tests and demos) and HardwareRobot (MATLAB IK/FK + Feetech servos). Vision code
+depends only on this interface, so either can be swapped in.
 """
 
 from __future__ import annotations

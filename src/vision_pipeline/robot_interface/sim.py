@@ -2,15 +2,13 @@
 A simulated robot backend: implements RobotInterface without any hardware.
 
 Purpose: let the entire pick pipeline (detect -> world coordinate -> plan ->
-execute) run and be tested end-to-end before the real 5-DOF arm code exists.
+execute) run and be tested end-to-end with no hardware.
 It doesn't move anything — it just reports a fixed "current" gripper pose and
 records every command it receives, so tests and the demo script can assert the
 pipeline commanded the right poses and gripper actions.
 
-Merge path: when the real arm arrives, write a sibling backend (e.g. an
-`ArmRobot`) that implements the same three methods against your hardware, and
-swap it in wherever SimRobot is constructed. Nothing else in the pipeline
-changes.
+The real-arm sibling is HardwareRobot (robot_interface/hardware.py); swap it
+in wherever SimRobot is constructed. Nothing else in the pipeline changes.
 """
 
 from __future__ import annotations
